@@ -4,6 +4,7 @@ GEM
     gosu (0.7.48)
     hasu (0.0.10)
     opengl (0.8.0)
+    perftools.rb (2.0.1)
     ruby-prof (0.13.0)
     values (1.5.0)
 
@@ -14,5 +15,6 @@ DEPENDENCIES
   gosu
   hasu
   opengl
+  perftools.rb
   ruby-prof
   values
