@@ -7,9 +7,9 @@ class Player
   attr_reader :x, :y, :z, :y_angle, :x_angle
 
   def initialize(blocks)
-    @x = 0
-    @y = 1
-    @z = 0
+    @x = 50
+    @y = 20
+    @z = -50
     @y_angle = 0
     @x_angle = 0
     @blocks = blocks
