@@ -5,6 +5,7 @@ require 'hasu'
 require 'opengl'
 require 'ruby-prof'
 require 'perftools'
+require 'pp'
 
 Hasu.load 'block.rb'
 Hasu.load 'player.rb'
@@ -39,8 +40,8 @@ class Rubycraft < Gosu::Window
 
     @blocks = {}
 
-    50.times do |i|
-      50.times.map do |j|
+    100.times do |i|
+      100.times.map do |j|
         next  if i == 1 && j == 2
         build_block(i, -1, -j)
       end
@@ -191,6 +192,8 @@ class Rubycraft < Gosu::Window
         @state = :playing
         center_mouse!
       end
+    when Gosu::KbH
+      pp GC.stat
     when Gosu::KbG
       if @profiling
         @profiling = false

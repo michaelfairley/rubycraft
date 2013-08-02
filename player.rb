@@ -27,18 +27,16 @@ class Player
     @x += dx
     @z += dz
 
-    colliding = @blocks.values.select{|b| colliding?(b) }
-
-    unless colliding.empty?
+    unless colliding_blocks.empty?
       target_x = if dx > 0
-                   colliding.map(&:x1).min - WIDTH
+                   colliding_blocks.map(&:x1).min - WIDTH
                  else
-                   colliding.map(&:x2).max + WIDTH
+                   colliding_blocks.map(&:x2).max + WIDTH
                  end
       target_z = if dz > 0
-                   colliding.map(&:z1).min - WIDTH
+                   colliding_blocks.map(&:z1).min - WIDTH
                  else
-                   colliding.map(&:z2).max + WIDTH
+                   colliding_blocks.map(&:z2).max + WIDTH
                  end
 
       if (target_x - x).abs < (target_z - z).abs
@@ -52,13 +50,11 @@ class Player
   def fall!
     @y += @velocity
 
-    colliding = @blocks.values.select{|b| colliding?(b) }
-
-    unless colliding.empty?
+    unless colliding_blocks.empty?
       target_y = if @velocity > 0
-                   colliding.map(&:y1).min - 0.5
+                   colliding_blocks.map(&:y1).min - 0.5
                  else
-                   colliding.map(&:y2).max + 1.5
+                   colliding_blocks.map(&:y2).max + 1.5
                  end
 
       @y = target_y
@@ -109,15 +105,6 @@ class Player
     @x_angle = [[90, @x_angle].min, -90].max
   end
 
-  def colliding?(block)
-    x2 > block.x1 &&
-      x1 < block.x2 &&
-      y2 > block.y1 &&
-      y1 < block.y2 &&
-      z2 > block.z1 &&
-      z1 < block.z2
-  end
-
   def targeted_block
     (0..REACH).step(0.05).map do |distance|
       horizontal = Math.cos(x_angle * Math::PI / 180) * distance
@@ -130,5 +117,33 @@ class Player
     end.map do |x, y, z|
       @blocks[[x.round,y.round,z.round]]
     end.compact.first
+  end
+
+  def colliding_blocks
+    x_min = x1.floor.to_i
+    x_max = x2.ceil.to_i
+    y_min = y1.floor.to_i
+    y_max = y2.ceil.to_i
+    z_min = z1.floor.to_i
+    z_max = z2.ceil.to_i
+
+    nearby_blocks = (x_min..x_max).flat_map do |x|
+      (y_min..y_max).flat_map do |y|
+        (z_min..z_max).flat_map do |z|
+          Array(@blocks[Point.new(x, y, z)])
+        end
+      end
+    end
+
+    nearby_blocks.select{|b| colliding?(b) }
+  end
+
+  def colliding?(block)
+    x2 > block.x1 &&
+      x1 < block.x2 &&
+      y2 > block.y1 &&
+      y1 < block.y2 &&
+      z2 > block.z1 &&
+      z1 < block.z2
   end
 end
