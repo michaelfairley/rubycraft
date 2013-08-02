@@ -73,7 +73,7 @@ class Player
   end
 
   def gravity!
-    @velocity -= 0.0077
+    @velocity -= 0.006
   end
 
   def forward!

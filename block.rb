@@ -1,4 +1,5 @@
 Hasu.load "point.rb"
+Hasu.load "face.rb"
 
 class Block
   attr_reader :loc
@@ -18,12 +19,12 @@ class Block
   def faces_to_show
     return @faces  if @faces
     @faces = []
-    @faces << LISTS.fetch(:right)  unless @blocks.has_key?(loc.right)
-    @faces << LISTS.fetch(:left)   unless @blocks.has_key?(loc.left)
-    @faces << LISTS.fetch(:top)    unless @blocks.has_key?(loc.up)
-    @faces << LISTS.fetch(:bottom) unless @blocks.has_key?(loc.down)
-    @faces << LISTS.fetch(:front)  unless @blocks.has_key?(loc.front)
-    @faces << LISTS.fetch(:back)   unless @blocks.has_key?(loc.back)
+    @faces << right  unless @blocks.has_key?(loc.right)
+    @faces << left   unless @blocks.has_key?(loc.left)
+    @faces << top    unless @blocks.has_key?(loc.up)
+    @faces << bottom unless @blocks.has_key?(loc.down)
+    @faces << front  unless @blocks.has_key?(loc.front)
+    @faces << back   unless @blocks.has_key?(loc.back)
     @faces
   end
 
@@ -36,36 +37,23 @@ class Block
   def brb; [x2, y1, z2]; end
   def brt; [x2, y2, z2]; end
 
-  def top    ; frt+flt+blt+brt; end
-  def front  ; flb+flt+frt+frb; end
-  def back   ; brb+brt+blt+blb; end
-  def bottom ; flb+frb+brb+blb; end
-  def right  ; frb+frt+brt+brb; end
-  def left   ; blb+blt+flt+flb; end
-
-  def tex_top    ; [0, 1, 0, 0, 1, 0, 1, 1]; end
-  def tex_side   ; [3, 1, 3, 0, 4, 0, 4, 1]; end
-  def tex_bottom ; [2, 1, 2, 0, 3, 0, 3, 1]; end
-
-  def top_color   ; [0.3, 0.6, 0.4, 1]; end
-  def other_color ; [1,   1,   1,   1]; end
+  def top    ;    GrassFace.new(frt+flt+blt+brt); end
+  def front  ; DirtSideFace.new(flb+flt+frt+frb); end
+  def back   ; DirtSideFace.new(brb+brt+blt+blb); end
+  def bottom ;     DirtFace.new(flb+frb+brb+blb); end
+  def right  ; DirtSideFace.new(frb+frt+brt+brb); end
+  def left   ; DirtSideFace.new(blb+blt+flt+flb); end
 
   def vertices
-    @vertices ||= top + bottom + front + back + right + left
+    faces_to_show.flat_map(&:vertices)
   end
 
   def tex_coords
-    @tex_coords ||=
-      (
-      tex_top + tex_bottom + tex_side + tex_side + tex_side + tex_side
-      ).map{ |c| c/16.0 }
+    faces_to_show.flat_map(&:tex_coords)
   end
 
   def colors
-    @colors ||= top_color*4 + other_color*5*4
-  end
-
-  def draw
+    faces_to_show.flat_map(&:colors)
   end
 
   def inspect
