@@ -30,6 +30,8 @@ class Player
     resolve_horizontal_collision
   end
 
+  # Corrects the Player's position after horizontal collision
+  # Based off of http://go.colorize.net/xna/2d_collision_response_xna/
   def resolve_horizontal_collision
     unless colliding_blocks.empty?
       x_resolutions = colliding_blocks.map do |block|
@@ -179,6 +181,8 @@ class Player
     nearby_blocks.select{|b| colliding?(b) }
   end
 
+  # AABB collision detection.
+  # Based off of http://stackoverflow.com/questions/3631437/cube-on-cube-collision-detection-algorithm
   def colliding?(block)
     x2 > block.x1 &&
       x1 < block.x2 &&
