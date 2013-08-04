@@ -36,3 +36,11 @@ class DirtSideFace < Face
     TEX_COORDS
   end
 end
+
+
+class StoneFace < Face
+  TEX_COORDS = [1, 1, 1, 0, 2, 0, 2, 1].map{ |c| c/16.0 }.freeze
+  def tex_coords
+    TEX_COORDS
+  end
+end

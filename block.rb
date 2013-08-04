@@ -41,12 +41,12 @@ class Block
   def brb; [x2, y1, z2]; end
   def brt; [x2, y2, z2]; end
 
-  def top    ;    GrassFace.new(frt+flt+blt+brt); end
-  def front  ; DirtSideFace.new(flb+flt+frt+frb); end
-  def back   ; DirtSideFace.new(brb+brt+blt+blb); end
-  def bottom ;     DirtFace.new(flb+frb+brb+blb); end
-  def right  ; DirtSideFace.new(frb+frt+brt+brb); end
-  def left   ; DirtSideFace.new(blb+blt+flt+flb); end
+  def top    ;    top_face.new(frt+flt+blt+brt); end
+  def front  ;  front_face.new(flb+flt+frt+frb); end
+  def back   ;   back_face.new(brb+brt+blt+blb); end
+  def bottom ; bottom_face.new(flb+frb+brb+blb); end
+  def right  ;  right_face.new(frb+frt+brt+brb); end
+  def left   ;   left_face.new(blb+blt+flt+flb); end
 
   def vertices
     faces_to_show.flat_map(&:vertices)
@@ -63,4 +63,22 @@ class Block
   def inspect
     "#<Block: {@loc}>"
   end
+end
+
+class GrassBlock < Block
+  def top_face    ;    GrassFace ; end
+  def front_face  ; DirtSideFace ; end
+  def back_face   ; DirtSideFace ; end
+  def bottom_face ;     DirtFace ; end
+  def right_face  ; DirtSideFace ; end
+  def left_face   ; DirtSideFace ; end
+end
+
+class StoneBlock < Block
+  def top_face    ; StoneFace ; end
+  def front_face  ; StoneFace ; end
+  def back_face   ; StoneFace ; end
+  def bottom_face ; StoneFace ; end
+  def right_face  ; StoneFace ; end
+  def left_face   ; StoneFace ; end
 end

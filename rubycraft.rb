@@ -174,7 +174,7 @@ class Rubycraft < Gosu::Window
       return unless @state == :playing
       empty_loc = @player.targeted_empty_loc
       if empty_loc
-        block = Block.new(empty_loc)
+        block = StoneBlock.new(empty_loc)
         unless @player.colliding?(block)
           Blocks.add!(block)
         end

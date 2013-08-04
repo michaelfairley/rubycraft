@@ -9,8 +9,8 @@ module Blocks
   end
 
   def self.create!(x, y, z)
-    block = Block.new(Point.new(x, y, z))
-    add(block)
+    block = GrassBlock.new(Point.new(x, y, z))
+    add!(block)
   end
 
   def self.add!(block)
