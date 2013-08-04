@@ -7,6 +7,7 @@ require 'ruby-prof'
 require 'perftools'
 require 'pp'
 require 'perlin'
+require 'dbg'
 
 Hasu.load 'block.rb'
 Hasu.load 'player.rb'

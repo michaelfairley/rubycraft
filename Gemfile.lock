@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    dbg (0.0.1)
     gosu (0.7.48)
     hasu (0.0.10)
     opengl (0.8.0)
@@ -13,6 +14,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  dbg
   gosu
   hasu
   opengl

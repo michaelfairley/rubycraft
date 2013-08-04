@@ -27,22 +27,53 @@ class Player
     @x += dx
     @z += dz
 
-    unless colliding_blocks.empty?
-      target_x = if dx > 0
-                   colliding_blocks.map(&:x1).min - WIDTH
-                 else
-                   colliding_blocks.map(&:x2).max + WIDTH
-                 end
-      target_z = if dz > 0
-                   colliding_blocks.map(&:z1).min - WIDTH
-                 else
-                   colliding_blocks.map(&:z2).max + WIDTH
-                 end
+    resolve_horizontal_collision
+    resolve_horizontal_collision
+  end
 
-      if (target_x - x).abs < (target_z - z).abs
-        @x = target_x
+  def resolve_horizontal_collision
+    unless colliding_blocks.empty?
+      x_resolutions = colliding_blocks.map do |block|
+        pos = block.x2 - x1
+        neg = block.x1 - x2
+
+        pos < neg.abs ? pos : neg
+      end
+
+      z_resolutions = colliding_blocks.map do |block|
+        pos = block.z2 - z1
+        neg = block.z1 - z2
+
+        pos < neg.abs ? pos : neg
+      end
+
+      pos_x, neg_x = x_resolutions.partition{|x| x > 0 }
+      pos_z, neg_z = z_resolutions.partition{|z| z > 0 }
+
+      dx = if pos_x.size > neg_x.size
+        pos_x.min
+      elsif pos_x.size < neg_x.size
+        neg_x.max
+      elsif pos_z.size == neg_z.size
+        x_resolutions.min_by(&:abs)
       else
-        @z = target_z
+        1.0/0
+      end
+
+      dz = if pos_z.size > neg_z.size
+        pos_z.min
+      elsif pos_z.size < neg_z.size
+        neg_z.max
+      elsif pos_x.size == neg_x.size
+        z_resolutions.min_by(&:abs)
+      else
+        1.0/0
+      end
+
+      if dx.abs < dz.abs
+        @x += dx
+      else
+        @z += dz
       end
     end
   end
