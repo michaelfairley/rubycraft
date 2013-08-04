@@ -170,6 +170,15 @@ class Rubycraft < Gosu::Window
       if targeted_block
         Blocks.remove!(targeted_block)
       end
+    when Gosu::MsRight
+      return unless @state == :playing
+      empty_loc = @player.targeted_empty_loc
+      if empty_loc
+        block = Block.new(empty_loc)
+        unless @player.colliding?(block)
+          Blocks.add!(block)
+        end
+      end
     end
   end
 

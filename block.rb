@@ -5,8 +5,8 @@ Hasu.load "face.rb"
 class Block
   attr_reader :loc
 
-  def initialize(x, y, z)
-    @loc = Point.new(x, y, z)
+  def initialize(loc)
+    @loc = loc
   end
 
   def x1; @x1 ||= loc.x-0.5 ; end

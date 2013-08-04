@@ -1,4 +1,3 @@
-placing blocks
 lots (infinite?) blocks
 - chunks?
 different blocks
@@ -9,3 +8,4 @@ radians
 pause text z
 pause text disappearing after an error
 refactor refactor refactor
+better ray/cube intersection

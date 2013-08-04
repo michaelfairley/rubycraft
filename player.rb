@@ -1,7 +1,7 @@
 class Player
   SPEED = 0.1
   TURN_SPEED = 0.3
-  REACH = 4
+  REACH = 5
   WIDTH = 0.4
 
   attr_reader :x, :y, :z, :y_angle, :x_angle
@@ -135,7 +135,7 @@ class Player
     @x_angle = [[90, @x_angle].min, -90].max
   end
 
-  def targeted_block
+  def _reach_ray
     (0..REACH).step(0.05).map do |distance|
       horizontal = Math.cos(x_angle * Math::PI / 180) * distance
       vertical = Math.sin(x_angle * Math::PI / 180) * distance
@@ -143,10 +143,21 @@ class Player
       x = @x + Math.sin(y_angle * Math::PI / 180) * horizontal
       z = @z - Math.cos(y_angle * Math::PI / 180) * horizontal
       y = @y + vertical
-      [x,y,z]
-    end.map do |x, y, z|
-      Blocks[Point.new(x.round,y.round,z.round)]
-    end.compact.first
+      Point.new(x.round,y.round,z.round)
+    end
+  end
+
+  def targeted_block
+    loc = _reach_ray.find do |loc|
+      Blocks.exists?(loc)
+    end
+    Blocks[loc]
+  end
+
+  def targeted_empty_loc
+    _reach_ray.each_cons(2).select do |current, nex|
+      Blocks.exists?(nex)
+    end.map(&:first).first
   end
 
   def colliding_blocks

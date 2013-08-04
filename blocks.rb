@@ -9,11 +9,11 @@ module Blocks
   end
 
   def self.create!(x, y, z)
-    block = Block.new(x, y, z)
+    block = Block.new(Point.new(x, y, z))
     add(block)
   end
 
-  def self.add(block)
+  def self.add!(block)
     _blocks[block.loc] = block
     _dirty!
   end
