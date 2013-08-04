@@ -6,13 +6,12 @@ class Player
 
   attr_reader :x, :y, :z, :y_angle, :x_angle
 
-  def initialize(blocks)
+  def initialize
     @x = 50
     @y = 20
     @z = -50
     @y_angle = 0
     @x_angle = 0
-    @blocks = blocks
     @velocity = 0.0
   end
 
@@ -146,7 +145,7 @@ class Player
       y = @y + vertical
       [x,y,z]
     end.map do |x, y, z|
-      @blocks[[x.round,y.round,z.round]]
+      Blocks[Point.new(x.round,y.round,z.round)]
     end.compact.first
   end
 
@@ -161,7 +160,7 @@ class Player
     nearby_blocks = (x_min..x_max).flat_map do |x|
       (y_min..y_max).flat_map do |y|
         (z_min..z_max).flat_map do |z|
-          Array(@blocks[Point.new(x, y, z)])
+          Array(Blocks[Point.new(x, y, z)])
         end
       end
     end

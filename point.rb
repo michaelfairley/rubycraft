@@ -36,6 +36,10 @@ class Point
     @right ||= self + Vector.new(1, 0, 0)
   end
 
+  def sides
+    [@up, @down, @left, @right, @front, @back]
+  end
+
   def eql?(other)
     x == other.x && y == other.y && z == other.z
   end

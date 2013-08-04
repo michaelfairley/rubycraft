@@ -1,12 +1,12 @@
+Hasu.load "blocks.rb"
 Hasu.load "point.rb"
 Hasu.load "face.rb"
 
 class Block
   attr_reader :loc
 
-  def initialize(x, y, z, blocks)
+  def initialize(x, y, z)
     @loc = Point.new(x, y, z)
-    @blocks = blocks
   end
 
   def x1; @x1 ||= loc.x-0.5 ; end
@@ -19,13 +19,17 @@ class Block
   def faces_to_show
     return @faces  if @faces
     @faces = []
-    @faces << right  unless @blocks.has_key?(loc.right)
-    @faces << left   unless @blocks.has_key?(loc.left)
-    @faces << top    unless @blocks.has_key?(loc.up)
-    @faces << bottom unless @blocks.has_key?(loc.down)
-    @faces << front  unless @blocks.has_key?(loc.front)
-    @faces << back   unless @blocks.has_key?(loc.back)
+    @faces << right  unless Blocks.exists?(loc.right)
+    @faces << left   unless Blocks.exists?(loc.left)
+    @faces << top    unless Blocks.exists?(loc.up)
+    @faces << bottom unless Blocks.exists?(loc.down)
+    @faces << front  unless Blocks.exists?(loc.front)
+    @faces << back   unless Blocks.exists?(loc.back)
     @faces
+  end
+
+  def dirty!
+    @faces = nil
   end
 
   def flb; [x1, y1, z1]; end

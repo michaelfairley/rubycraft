@@ -10,6 +10,7 @@ require 'perlin'
 require 'dbg'
 
 Hasu.load 'block.rb'
+Hasu.load 'blocks.rb'
 Hasu.load 'player.rb'
 Hasu.load 'point.rb'
 
@@ -40,7 +41,7 @@ class Rubycraft < Gosu::Window
 
     center_mouse!
 
-    @blocks = {}
+    Blocks.reset!
 
     start_size = 100
 
@@ -55,21 +56,11 @@ class Rubycraft < Gosu::Window
     start_size.times do |i|
       start_size.times do |j|
         y = tiny_noise[i][j] + small_noise[i][j] * 3 + big_noise[i][j] * 16
-        build_block(i, y.to_i, -j)
+        Blocks.create!(i, y.to_i, -j)
       end
     end
 
-    @player = Player.new(@blocks)
-
-    if @buffers
-      glDeleteBuffers(@buffers)
-      @buffers = nil
-    end
-  end
-
-  def build_block(x, y, z)
-    block = Block.new(x, y, z, @blocks)
-    @blocks[block.loc] = block
+    @player = Player.new
   end
 
   def update
@@ -96,33 +87,7 @@ class Rubycraft < Gosu::Window
     self.mouse_y = HEIGHT/2
   end
 
-  def fill_data
-    @buffers = glGenBuffers(3)
-    @vert_vbo, @tex_vbo, @color_vbo = @buffers
-
-    vertices = @blocks.values.flat_map(&:vertices)
-    vert_data = vertices.pack('f*')
-    glBindBuffer(GL_ARRAY_BUFFER, @vert_vbo)
-    glBufferData(GL_ARRAY_BUFFER, vertices.size*4, vert_data, GL_STATIC_DRAW)
-
-    tex_coords = @blocks.values.flat_map(&:tex_coords)
-    tex_data = tex_coords.pack('f*')
-    glBindBuffer(GL_ARRAY_BUFFER, @tex_vbo)
-    glBufferData(GL_ARRAY_BUFFER, tex_coords.size*4, tex_data, GL_STATIC_DRAW)
-
-    colors = @blocks.values.flat_map(&:colors)
-    color_data = colors.pack('f*')
-    glBindBuffer(GL_ARRAY_BUFFER, @color_vbo)
-    glBufferData(GL_ARRAY_BUFFER, colors.size*4, color_data, GL_STATIC_DRAW)
-
-    raise  unless vertices.size/3 == tex_coords.size/2
-    raise  unless vertices.size/3 == colors.size/4
-    @vertices_count = vertices.size/3
-  end
-
   def draw
-    fill_data  if @buffers.nil?
-
     gl do
       glEnable(GL_TEXTURE_2D)
       glBlendFunc(GL_SRC_ALPHA,GL_ONE)
@@ -162,20 +127,7 @@ class Rubycraft < Gosu::Window
 
       glColor4f(1, 1, 1, 1)
 
-      glBindBuffer(GL_ARRAY_BUFFER, @vert_vbo)
-      glVertexPointer(3, GL_FLOAT, 0, 0)
-
-      glBindBuffer(GL_ARRAY_BUFFER, @tex_vbo)
-      glTexCoordPointer(2, GL_FLOAT, 0, 0)
-
-      glBindBuffer(GL_ARRAY_BUFFER, @color_vbo)
-      glColorPointer(4, GL_FLOAT, 0, 0)
-
-      glEnableClientState(GL_VERTEX_ARRAY)
-      glEnableClientState(GL_TEXTURE_COORD_ARRAY)
-      glEnableClientState(GL_COLOR_ARRAY)
-
-      glDrawArrays(GL_QUADS, 0, @vertices_count)
+      Blocks.draw
     end
 
     if @state == :paused
@@ -216,6 +168,7 @@ class Rubycraft < Gosu::Window
       return unless @state == :playing
       targeted_block = @player.targeted_block
       if targeted_block
+        Blocks.remove!(targeted_block)
       end
     end
   end
