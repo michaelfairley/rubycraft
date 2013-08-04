@@ -15,11 +15,15 @@ module Blocks
 
   def self.add!(block)
     _blocks[block.loc] = block
+    block.loc.sides.map{|l| _blocks[l] }.compact.each(&:dirty!)
     _dirty!
   end
 
   def self.remove!(block)
     _blocks.delete(block.loc)
+    if block == damage_block
+      self.damage_block = nil
+    end
     block.loc.sides.map{|l| _blocks[l] }.compact.each(&:dirty!)
     _dirty!
   end
@@ -84,5 +88,17 @@ module Blocks
     glDisableClientState(GL_VERTEX_ARRAY)
     glDisableClientState(GL_TEXTURE_COORD_ARRAY)
     glDisableClientState(GL_COLOR_ARRAY)
+
+    if damage_block
+      damage_block.damage_faces.each(&:draw_immediate)
+    end
+  end
+
+  def self.damage_block=(damage_block)
+    @damage_block = damage_block
+  end
+
+  def self.damage_block
+    @damage_block
   end
 end

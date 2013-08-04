@@ -73,7 +73,11 @@ class Rubycraft < Gosu::Window
     @player.sright!    if button_down?(Gosu::KbD)
     @player.fall!
 
-    @player.dig! if button_down?(Gosu::MsLeft)
+    if button_down?(Gosu::MsLeft)
+      @player.dig!
+    elsif Blocks.damage_block
+      Blocks.damage_block.reset_strength!
+    end
 
     dx = self.mouse_x - WIDTH/2
     dy = self.mouse_y - HEIGHT/2
@@ -92,7 +96,7 @@ class Rubycraft < Gosu::Window
   def draw
     gl do
       glEnable(GL_TEXTURE_2D)
-      glBlendFunc(GL_SRC_ALPHA,GL_ONE)
+      glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
       glShadeModel(GL_SMOOTH)
       glClearColor(0,0,0,0)
       glClearDepth(1)

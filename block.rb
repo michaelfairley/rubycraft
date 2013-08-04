@@ -7,6 +7,11 @@ class Block
 
   def initialize(loc)
     @loc = loc
+    reset_strength!
+  end
+
+  def reset_strength!
+    Blocks.damage_block = nil
     @strength = starting_strength
   end
 
@@ -62,11 +67,47 @@ class Block
   end
 
   def dig!
+    Blocks.damage_block = self
     @strength -= 1
     if @strength <= 0
       Blocks.remove!(self)
     end
   end
+
+  def damage_faces
+    damage_faces = []
+    damage_faces << damage_right  unless Blocks.exists?(loc.right)
+    damage_faces << damage_left   unless Blocks.exists?(loc.left)
+    damage_faces << damage_top    unless Blocks.exists?(loc.up)
+    damage_faces << damage_bottom unless Blocks.exists?(loc.down)
+    damage_faces << damage_front  unless Blocks.exists?(loc.front)
+    damage_faces << damage_back   unless Blocks.exists?(loc.back)
+    damage_faces
+  end
+
+  def damage_face
+    strengthyness = @strength.to_f / starting_strength
+    case strengthyness
+    when 0.0...0.1; DamageFace9
+    when 0.1...0.2; DamageFace8
+    when 0.2...0.3; DamageFace7
+    when 0.3...0.4; DamageFace6
+    when 0.4...0.5; DamageFace5
+    when 0.5...0.6; DamageFace4
+    when 0.6...0.7; DamageFace3
+    when 0.7...0.8; DamageFace2
+    when 0.8...0.9; DamageFace1
+    when 0.9...1.0; DamageFace0
+    else; raise
+    end
+  end
+
+  def damage_top    ; damage_face.new(frt+flt+blt+brt); end
+  def damage_front  ; damage_face.new(flb+flt+frt+frb); end
+  def damage_back   ; damage_face.new(brb+brt+blt+blb); end
+  def damage_bottom ; damage_face.new(flb+frb+brb+blb); end
+  def damage_right  ; damage_face.new(frb+frt+brt+brb); end
+  def damage_left   ; damage_face.new(blb+blt+flt+flb); end
 
   def inspect
     "#<Block: {@loc}>"
@@ -85,7 +126,7 @@ class GrassBlock < Block
 end
 
 class StoneBlock < Block
-  def starting_strength; 3; end
+  def starting_strength; 30; end
 
   def top_face    ; StoneFace ; end
   def front_face  ; StoneFace ; end

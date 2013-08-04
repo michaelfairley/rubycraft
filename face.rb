@@ -15,39 +15,76 @@ class Face
 
   COLORS = ([1, 1, 1, 1] * 4).freeze
   def colors
-    COLORS
+    self.class.const_get(:COLORS)
+  end
+
+  def tex_coords
+    self.class.const_get(:TEX_COORDS)
   end
 end
 
 class GrassFace < Face
   COLORS = ([0.3, 0.6, 0.4, 1] * 4).freeze
-  def colors
-    COLORS
-  end
-
   TEX_COORDS = texture(0, 0)
-  def tex_coords
-    TEX_COORDS
-  end
 end
 
 class DirtFace < Face
   TEX_COORDS = texture(2, 0)
-  def tex_coords
-    TEX_COORDS
-  end
 end
 
 class DirtSideFace < Face
   TEX_COORDS = texture(3, 0)
-  def tex_coords
-    TEX_COORDS
-  end
 end
 
 class StoneFace < Face
   TEX_COORDS = texture(1, 0)
-  def tex_coords
-    TEX_COORDS
+end
+
+class DamageFace < Face
+  COLORS = ([1, 1, 0.9, 1.0] * 4).freeze
+
+  def draw_immediate
+    glEnable(GL_BLEND)
+
+    glBegin(GL_QUADS) do
+      vertices.each_slice(3).zip(tex_coords.each_slice(2), colors.each_slice(4)) do |v, t, c|
+        glColor4f(*c)
+        glTexCoord2f(*t)
+        glVertex3f(*v)
+      end
+    end
+
+    glDisable(GL_BLEND)
   end
+end
+
+class DamageFace0 < DamageFace
+  TEX_COORDS = texture(0, 15)
+end
+class DamageFace1 < DamageFace
+  TEX_COORDS = texture(1, 15)
+end
+class DamageFace2 < DamageFace
+  TEX_COORDS = texture(2, 15)
+end
+class DamageFace3 < DamageFace
+  TEX_COORDS = texture(3, 15)
+end
+class DamageFace4 < DamageFace
+  TEX_COORDS = texture(4, 15)
+end
+class DamageFace5 < DamageFace
+  TEX_COORDS = texture(5, 15)
+end
+class DamageFace6 < DamageFace
+  TEX_COORDS = texture(6, 15)
+end
+class DamageFace7 < DamageFace
+  TEX_COORDS = texture(7, 15)
+end
+class DamageFace8 < DamageFace
+  TEX_COORDS = texture(8, 15)
+end
+class DamageFace9 < DamageFace
+  TEX_COORDS = texture(9, 15)
 end
