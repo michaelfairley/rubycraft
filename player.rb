@@ -187,4 +187,10 @@ class Player
       z2 > block.z1 &&
       z1 < block.z2
   end
+
+  def dig!
+    if targeted_block
+      targeted_block.dig!
+    end
+  end
 end

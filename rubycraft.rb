@@ -73,6 +73,8 @@ class Rubycraft < Gosu::Window
     @player.sright!    if button_down?(Gosu::KbD)
     @player.fall!
 
+    @player.dig! if button_down?(Gosu::MsLeft)
+
     dx = self.mouse_x - WIDTH/2
     dy = self.mouse_y - HEIGHT/2
 
@@ -164,12 +166,6 @@ class Rubycraft < Gosu::Window
       puts "FPS: #{Gosu.fps}"
     when Gosu::KbSpace
       @player.jump!
-    when Gosu::MsLeft
-      return unless @state == :playing
-      targeted_block = @player.targeted_block
-      if targeted_block
-        Blocks.remove!(targeted_block)
-      end
     when Gosu::MsRight
       return unless @state == :playing
       empty_loc = @player.targeted_empty_loc

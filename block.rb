@@ -7,6 +7,7 @@ class Block
 
   def initialize(loc)
     @loc = loc
+    @strength = starting_strength
   end
 
   def x1; @x1 ||= loc.x-0.5 ; end
@@ -60,12 +61,21 @@ class Block
     faces_to_show.flat_map(&:colors)
   end
 
+  def dig!
+    @strength -= 1
+    if @strength <= 0
+      Blocks.remove!(self)
+    end
+  end
+
   def inspect
     "#<Block: {@loc}>"
   end
 end
 
 class GrassBlock < Block
+  def starting_strength; 1; end
+
   def top_face    ;    GrassFace ; end
   def front_face  ; DirtSideFace ; end
   def back_face   ; DirtSideFace ; end
@@ -75,6 +85,8 @@ class GrassBlock < Block
 end
 
 class StoneBlock < Block
+  def starting_strength; 3; end
+
   def top_face    ; StoneFace ; end
   def front_face  ; StoneFace ; end
   def back_face   ; StoneFace ; end
