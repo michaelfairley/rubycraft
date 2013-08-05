@@ -6,13 +6,13 @@ require 'opengl'
 require 'ruby-prof'
 require 'perftools'
 require 'pp'
-require 'perlin'
 require 'dbg'
 
 Hasu.load 'block.rb'
 Hasu.load 'blocks.rb'
 Hasu.load 'player.rb'
 Hasu.load 'point.rb'
+Hasu.load 'terrain_generator.rb'
 
 class Rubycraft < Gosu::Window
   prepend Hasu
@@ -45,20 +45,8 @@ class Rubycraft < Gosu::Window
 
     start_size = 100
 
-    tiny_gen = Perlin::Generator.new(1, 0.5, 5)
-    small_gen = Perlin::Generator.new(2, 0.5, 5)
-    big_gen = Perlin::Generator.new(4, 0.25, 5)
-
-    tiny_noise = tiny_gen.chunk(0, 0, start_size, start_size, 0.1)
-    small_noise = small_gen.chunk(0, 0, start_size, start_size, 0.05)
-    big_noise = big_gen.chunk(0, 0, start_size, start_size, 0.005)
-
-    start_size.times do |i|
-      start_size.times do |j|
-        y = tiny_noise[i][j] + small_noise[i][j] * 3 + big_noise[i][j] * 16
-        Blocks.create!(i, y.to_i, -j)
-      end
-    end
+    @generator = TerrainGenerator.new(3)
+    @generator.generate(0, 0, start_size, start_size)
 
     @player = Player.new
   end
