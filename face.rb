@@ -13,7 +13,7 @@ class Face
     ].map{ |c| c/16.0 }.freeze
   end
 
-  COLORS = ([1, 1, 1, 1] * 4).freeze
+  COLORS = ([1.0, 1.0, 1.0, 1.0] * 4).freeze
   def colors
     self.class.const_get(:COLORS)
   end
@@ -24,7 +24,7 @@ class Face
 end
 
 class GrassFace < Face
-  COLORS = ([0.3, 0.6, 0.4, 1] * 4).freeze
+  COLORS = ([0.3, 0.6, 0.4, 1.0] * 4).freeze
   TEX_COORDS = texture(0, 0)
 end
 
