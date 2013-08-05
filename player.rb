@@ -9,7 +9,7 @@ class Player
   def initialize
     @x = 50
     @y = 20
-    @z = -50
+    @z = 50
     @y_angle = 0
     @x_angle = 0
     @velocity = 0.0
@@ -153,7 +153,7 @@ class Player
     loc = _reach_ray.find do |loc|
       Blocks.exists?(loc)
     end
-    Blocks[loc]
+    loc && Blocks[loc]
   end
 
   def targeted_empty_loc

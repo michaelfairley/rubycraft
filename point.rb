@@ -37,7 +37,7 @@ class Point
   end
 
   def sides
-    [@up, @down, @left, @right, @front, @back]
+    [up, down, left, right, front, back]
   end
 
   def eql?(other)

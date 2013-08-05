@@ -43,10 +43,11 @@ class Rubycraft < Gosu::Window
 
     Blocks.reset!
 
-    start_size = 100
-
-    @generator = TerrainGenerator.new(3)
-    @generator.generate(0, 0, start_size, start_size)
+    10.times do |x|
+      10.times do |z|
+        Blocks.ensure_chunk_for_point(Point.new(x*10, 0, z*10))
+      end
+    end
 
     @player = Player.new
   end
@@ -94,6 +95,10 @@ class Rubycraft < Gosu::Window
       glEnable(GL_CULL_FACE)
       glCullFace(GL_BACK)
       # glDepthRange(0, 0)
+
+      glEnableClientState(GL_VERTEX_ARRAY)
+      glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+      glEnableClientState(GL_COLOR_ARRAY)
 
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
       glBindTexture(GL_TEXTURE_2D, @texture.tex_name)

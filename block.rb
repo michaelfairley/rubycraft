@@ -23,19 +23,14 @@ class Block
   def z2; @z2 ||= loc.z+0.5 ; end
 
   def faces_to_show
-    return @faces  if @faces
-    @faces = []
-    @faces << right  unless Blocks.exists?(loc.right)
-    @faces << left   unless Blocks.exists?(loc.left)
-    @faces << top    unless Blocks.exists?(loc.up)
-    @faces << bottom unless Blocks.exists?(loc.down)
-    @faces << front  unless Blocks.exists?(loc.front)
-    @faces << back   unless Blocks.exists?(loc.back)
-    @faces
-  end
-
-  def dirty!
-    @faces = nil
+    faces = []
+    faces << right  unless Blocks.exists?(loc.right)
+    faces << left   unless Blocks.exists?(loc.left)
+    faces << top    unless Blocks.exists?(loc.up)
+    faces << bottom unless Blocks.exists?(loc.down)
+    faces << front  unless Blocks.exists?(loc.front)
+    faces << back   unless Blocks.exists?(loc.back)
+    faces
   end
 
   def flb; [x1, y1, z1]; end
