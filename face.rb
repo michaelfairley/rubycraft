@@ -15,11 +15,11 @@ class Face
 
   COLORS = ([1.0, 1.0, 1.0, 1.0] * 4).freeze
   def colors
-    self.class.const_get(:COLORS)
+    self.class::COLORS
   end
 
   def tex_coords
-    self.class.const_get(:TEX_COORDS)
+    self.class::TEX_COORDS
   end
 end
 
