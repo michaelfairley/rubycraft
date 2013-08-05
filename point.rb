@@ -40,6 +40,10 @@ class Point
     [up, down, left, right, front, back]
   end
 
+  def round
+    Point.new(x.round,y.round,z.round)
+  end
+
   def eql?(other)
     x == other.x && y == other.y && z == other.z
   end

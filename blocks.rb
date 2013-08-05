@@ -6,18 +6,26 @@ module Blocks
   end
 
   def self._chunk_for_point(loc)
-    x = loc.x.to_i / 10 * 10
-    z = loc.z.to_i / 10 * 10
+    x = loc.x.to_i / Chunk::SIZE * Chunk::SIZE
+    z = loc.z.to_i / Chunk::SIZE * Chunk::SIZE
 
     _chunks[[x, z]]
   end
 
   def self.ensure_chunk_for_point(loc)
-    x = loc.x.to_i / 10 * 10
-    z = loc.z.to_i / 10 * 10
+    x = loc.x.to_i / Chunk::SIZE * Chunk::SIZE
+    z = loc.z.to_i / Chunk::SIZE * Chunk::SIZE
 
     _chunks.fetch([x, z]) do |x, z|
       _chunks[[x, z]] = Chunk.new(x, z)
+    end
+  end
+
+  def self.ensure_chunks_near_player(player)
+    (-50..50).step(Chunk::SIZE) do |dx|
+      (-50..50).step(Chunk::SIZE) do |dz|
+        ensure_chunk_for_point(Point.new(dx, 0, dz) + player.loc)
+      end
     end
   end
 

@@ -55,6 +55,8 @@ class Rubycraft < Gosu::Window
   def update
     return  if @state == :paused
 
+    Blocks.ensure_chunks_near_player(@player)
+
     @player.gravity!
     @player.forward!   if button_down?(Gosu::KbW)
     @player.backward!  if button_down?(Gosu::KbS)
@@ -122,7 +124,7 @@ class Rubycraft < Gosu::Window
 
       glRotatef(@player.y_angle, 0, 1, 0)
       glRotatef(-@player.x_angle, Math.cos(@player.y_angle * Math::PI / 180), 0, Math.sin(@player.y_angle * Math::PI / 180))
-      glTranslate(-@player.x, -@player.y, -@player.z)
+      glTranslate(-@player.loc.x, -@player.loc.y, -@player.loc.z)
 
       glColor4f(1, 1, 1, 1)
 

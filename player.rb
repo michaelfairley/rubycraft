@@ -4,27 +4,24 @@ class Player
   REACH = 5
   WIDTH = 0.4
 
-  attr_reader :x, :y, :z, :y_angle, :x_angle
+  attr_reader :y_angle, :x_angle, :loc
 
   def initialize
-    @x = 50
-    @y = 20
-    @z = 50
+    @loc = Point.new(50, 20, 50)
     @y_angle = 0
     @x_angle = 0
     @velocity = 0.0
   end
 
-  def x1; @x-WIDTH; end
-  def x2; @x+WIDTH; end
-  def y1; @y-1.5; end
-  def y2; @y+0.5; end
-  def z1; @z-WIDTH; end
-  def z2; @z+WIDTH; end
+  def x1; @loc.x-WIDTH; end
+  def x2; @loc.x+WIDTH; end
+  def y1; @loc.y-1.5; end
+  def y2; @loc.y+0.5; end
+  def z1; @loc.z-WIDTH; end
+  def z2; @loc.z+WIDTH; end
 
   def _move!(dx, dz)
-    @x += dx
-    @z += dz
+    @loc += Point.new(dx, 0, dz)
 
     resolve_horizontal_collision
     resolve_horizontal_collision
@@ -72,24 +69,24 @@ class Player
       end
 
       if dx.abs < dz.abs
-        @x += dx
+        @loc += Point.new(dx, 0, 0)
       else
-        @z += dz
+        @loc += Point.new(0, 0, dz)
       end
     end
   end
 
   def fall!
-    @y += @velocity
+    @loc += Point.new(0, @velocity, 0)
 
     unless colliding_blocks.empty?
-      target_y = if @velocity > 0
-                   colliding_blocks.map(&:y1).min - 0.5
-                 else
-                   colliding_blocks.map(&:y2).max + 1.5
-                 end
+      dy = if @velocity > 0
+             colliding_blocks.map(&:y1).min - y2
+           else
+             colliding_blocks.map(&:y2).max - y1
+           end
 
-      @y = target_y
+      @loc += Point.new(0, dy, 0)
       @velocity = 0
     end
   end
@@ -142,9 +139,9 @@ class Player
       horizontal = Math.cos(x_angle * Math::PI / 180) * distance
       vertical = Math.sin(x_angle * Math::PI / 180) * distance
 
-      x = @x + Math.sin(y_angle * Math::PI / 180) * horizontal
-      z = @z - Math.cos(y_angle * Math::PI / 180) * horizontal
-      y = @y + vertical
+      x = @loc.x + Math.sin(y_angle * Math::PI / 180) * horizontal
+      z = @loc.z - Math.cos(y_angle * Math::PI / 180) * horizontal
+      y = @loc.y + vertical
       Point.new(x.round,y.round,z.round)
     end
   end
