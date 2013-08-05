@@ -131,6 +131,8 @@ class Rubycraft < Gosu::Window
       Blocks.draw
     end
 
+    @font.draw(Gosu.fps, 10, 440, 0)
+
     if @state == :paused
       @font.draw('Paused', 200, 200, 0)
     end
