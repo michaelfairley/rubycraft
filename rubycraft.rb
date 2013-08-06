@@ -43,19 +43,11 @@ class Rubycraft < Gosu::Window
 
     Blocks.reset!
 
-    10.times do |x|
-      10.times do |z|
-        Blocks.ensure_chunk_for_point(Point.new(x*10, 0, z*10))
-      end
-    end
-
     @player = Player.new
   end
 
   def update
     return  if @state == :paused
-
-    Blocks.ensure_chunks_near_player(@player)
 
     @player.gravity!
     @player.forward!   if button_down?(Gosu::KbW)
@@ -128,7 +120,7 @@ class Rubycraft < Gosu::Window
 
       glColor4f(1, 1, 1, 1)
 
-      Blocks.draw
+      Blocks.draw(@player)
     end
 
     @font.draw(Gosu.fps, 10, 440, 0)

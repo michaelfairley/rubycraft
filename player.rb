@@ -3,6 +3,7 @@ class Player
   TURN_SPEED = 0.3
   REACH = 5
   WIDTH = 0.4
+  SIGHT = 50
 
   attr_reader :y_angle, :x_angle, :loc
 

@@ -21,14 +21,6 @@ module Blocks
     end
   end
 
-  def self.ensure_chunks_near_player(player)
-    (-50..50).step(Chunk::SIZE) do |dx|
-      (-50..50).step(Chunk::SIZE) do |dz|
-        ensure_chunk_for_point(Point.new(dx, 0, dz) + player.loc)
-      end
-    end
-  end
-
   def self.exists?(loc)
     chunk = _chunk_for_point(loc)
     chunk && chunk.exists?(loc)
@@ -60,8 +52,17 @@ module Blocks
     @chunks = {}
   end
 
-  def self.draw
-    _chunks.values.each(&:draw)
+  def self._nearby_chunks(player)
+    (-Player::SIGHT..Player::SIGHT).step(Chunk::SIZE).flat_map do |x|
+      depth = Math.sqrt(Player::SIGHT**2 - x ** 2)
+      (-depth..depth).step(Chunk::SIZE).map do |z|
+        ensure_chunk_for_point(Point.new(x, 0, z) + player.loc)
+      end
+    end
+  end
+
+  def self.draw(player)
+    _nearby_chunks(player).each(&:draw)
 
     if damage_block
       damage_block.damage_faces.each(&:draw_immediate)
