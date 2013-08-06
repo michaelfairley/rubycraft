@@ -22,7 +22,7 @@ module Blocks
   end
 
   def self.exists?(loc)
-    chunk = _chunk_for_point(loc)
+    chunk = ensure_chunk_for_point(loc)
     chunk && chunk.exists?(loc)
   end
 
