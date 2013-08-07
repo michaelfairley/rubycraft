@@ -30,9 +30,9 @@ class Chunk
   end
 
   def dirty!
-    if @buffers
-      glDeleteBuffers(@buffers)
-      @buffers = nil
+    if @vbo
+      glDeleteBuffers(@vbo)
+      @vbo = nil
     end
   end
 
@@ -50,24 +50,21 @@ class Chunk
     end
   end
 
-  def fill_buffers
-    @buffers = glGenBuffers(3)
-    @vert_vbo, @tex_vbo, @color_vbo = @buffers
+  def fill_buffer
+    @vbo = glGenBuffers(1)[0]
 
     vertices = _blocks.values.flat_map(&:vertices)
     vert_data = vertices.pack('f*')
-    glBindBuffer(GL_ARRAY_BUFFER, @vert_vbo)
-    glBufferData(GL_ARRAY_BUFFER, vertices.size*4, vert_data, GL_STATIC_DRAW)
 
     tex_coords = _blocks.values.flat_map(&:tex_coords)
     tex_data = tex_coords.pack('f*')
-    glBindBuffer(GL_ARRAY_BUFFER, @tex_vbo)
-    glBufferData(GL_ARRAY_BUFFER, tex_coords.size*4, tex_data, GL_STATIC_DRAW)
 
     colors = _blocks.values.flat_map(&:colors)
     color_data = colors.pack('C*')
-    glBindBuffer(GL_ARRAY_BUFFER, @color_vbo)
-    glBufferData(GL_ARRAY_BUFFER, colors.size*4, color_data, GL_STATIC_DRAW)
+
+    glBindBuffer(GL_ARRAY_BUFFER, @vbo)
+    glBufferData(GL_ARRAY_BUFFER, vertices.size*4+tex_coords.size*4+colors.size*4, vert_data + tex_data + color_data, GL_STATIC_DRAW)
+
 
     raise  unless vertices.size/3 == tex_coords.size/2
     raise  unless vertices.size/3 == colors.size/4
@@ -75,16 +72,13 @@ class Chunk
   end
 
   def draw
-    fill_buffers  if @buffers.nil?
+    fill_buffer  if @vbo.nil?
 
-    glBindBuffer(GL_ARRAY_BUFFER, @vert_vbo)
+    glBindBuffer(GL_ARRAY_BUFFER, @vbo)
+
     glVertexPointer(3, GL_FLOAT, 0, 0)
-
-    glBindBuffer(GL_ARRAY_BUFFER, @tex_vbo)
-    glTexCoordPointer(2, GL_FLOAT, 0, 0)
-
-    glBindBuffer(GL_ARRAY_BUFFER, @color_vbo)
-    glColorPointer(4, GL_UNSIGNED_BYTE, 0, 0)
+    glTexCoordPointer(2, GL_FLOAT, 0, @vertices_count*3*4)
+    glColorPointer(4, GL_UNSIGNED_BYTE, 0, @vertices_count*3*4 + @vertices_count*2*4)
 
     glDrawArrays(GL_QUADS, 0, @vertices_count)
   end
