@@ -11,7 +11,6 @@ class Block
   end
 
   def reset_strength!
-    Blocks.damage_block = nil
     @strength = starting_strength
   end
 
@@ -66,6 +65,7 @@ class Block
     @strength -= 1
     if @strength <= 0
       Blocks.remove!(self)
+      Blocks.damage_block = nil
     end
   end
 

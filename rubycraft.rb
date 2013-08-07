@@ -62,7 +62,7 @@ class Rubycraft < Gosu::Window
     if button_down?(Gosu::MsLeft)
       @player.dig!
     elsif Blocks.damage_block
-      Blocks.damage_block.reset_strength!
+      Blocks.damage_block = nil
     end
 
     dx = self.mouse_x - WIDTH/2

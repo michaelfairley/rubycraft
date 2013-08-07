@@ -40,6 +40,7 @@ module Blocks
   end
 
   def self.reset!
+    self.damage_block = nil
     _chunks.values.each(&:dirty!)  if @chunks
     @chunks = {}
   end
@@ -62,6 +63,9 @@ module Blocks
   end
 
   def self.damage_block=(damage_block)
+    if @damage_block && @damage_block != damage_block
+      @damage_block.reset_strength!
+    end
     @damage_block = damage_block
   end
 
