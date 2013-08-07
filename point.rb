@@ -1,11 +1,14 @@
 class Point
-  attr_reader :x, :y, :z, :hash
+  attr_reader :x, :y, :z
 
   def initialize(x, y, z)
     @x = x
     @y = y
     @z = z
-    @hash = self.class.hash ^ [x, y, z].hash
+  end
+
+  def hash
+    @hash ||= self.class.hash ^ [x, y, z].hash
   end
 
   def +(other)
