@@ -44,10 +44,13 @@ class Rubycraft < Gosu::Window
     Blocks.reset!
 
     @player = Player.new
+
+    $tick = 0
   end
 
   def update
     return  if @state == :paused
+    $tick += 1
 
     @player.gravity!
     @player.forward!   if button_down?(Gosu::KbW)

@@ -121,7 +121,7 @@ class GrassBlock < Block
 end
 
 class StoneBlock < Block
-  def starting_strength; 30; end
+  def starting_strength; 10; end
 
   def top_face    ; StoneFace ; end
   def front_face  ; StoneFace ; end
