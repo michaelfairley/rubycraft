@@ -65,7 +65,7 @@ class Chunk
     glBufferData(GL_ARRAY_BUFFER, tex_coords.size*4, tex_data, GL_STATIC_DRAW)
 
     colors = _blocks.values.flat_map(&:colors)
-    color_data = colors.pack('f*')
+    color_data = colors.pack('C*')
     glBindBuffer(GL_ARRAY_BUFFER, @color_vbo)
     glBufferData(GL_ARRAY_BUFFER, colors.size*4, color_data, GL_STATIC_DRAW)
 
@@ -84,7 +84,7 @@ class Chunk
     glTexCoordPointer(2, GL_FLOAT, 0, 0)
 
     glBindBuffer(GL_ARRAY_BUFFER, @color_vbo)
-    glColorPointer(4, GL_FLOAT, 0, 0)
+    glColorPointer(4, GL_UNSIGNED_BYTE, 0, 0)
 
     glDrawArrays(GL_QUADS, 0, @vertices_count)
   end

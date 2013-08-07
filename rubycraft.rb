@@ -28,8 +28,8 @@ class Rubycraft < Gosu::Window
     @image = Gosu::Image.new(self, "terrain.png", true) # We need to hold an explicit refernce to this
     @texture = @image.gl_tex_info
     glBindTexture(GL_TEXTURE_2D, @texture.tex_name)
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST)
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR)
+    glTexParameter(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST)
+    glTexParameter(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR)
   end
 
   def reset
