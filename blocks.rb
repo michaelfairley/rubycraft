@@ -9,9 +9,7 @@ module Blocks
     x = loc.x.to_i / Chunk::SIZE * Chunk::SIZE
     z = loc.z.to_i / Chunk::SIZE * Chunk::SIZE
 
-    _chunks.fetch([x, z]) do |x, z|
-      _chunks[[x, z]] = Chunk.new(x, z)
-    end
+    _chunks[[x, z]] ||= Chunk.new(x, z)
   end
 
   def self.exists?(loc)
