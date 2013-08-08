@@ -9,7 +9,7 @@ module Blocks
     x = loc.x.to_i / Chunk::SIZE * Chunk::SIZE
     z = loc.z.to_i / Chunk::SIZE * Chunk::SIZE
 
-    _chunks[[x, z]] ||= Chunk.new(x, z)
+    _chunks[x][z]
   end
 
   def self.exists?(loc)
@@ -40,7 +40,11 @@ module Blocks
   def self.reset!
     self.damage_block = nil
     _chunks.values.each(&:dirty!)  if @chunks
-    @chunks = {}
+    @chunks = Hash.new do |hx, x|
+      hx[x] = Hash.new do |hz, z|
+        hz[z] = Chunk.new(x, z)
+      end
+    end
   end
 
   def self._nearby_chunks(player)
