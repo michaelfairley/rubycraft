@@ -11,22 +11,22 @@ class Chunk
   end
 
   def add!(block)
-    _blocks[block.loc] = block
+    _blocks[block.loc.x][block.loc.y][block.loc.z] = block
   end
 
   def remove!(block)
-    _blocks.delete(block.loc)
+    _blocks[block.loc.x][block.loc.y].delete(block.loc.z)
     if block == Blocks.damage_block
       Blocks.damage_block = nil
     end
   end
 
-  def [](*args)
-    _blocks[*args]
+  def [](loc)
+    _blocks[loc.x][loc.y][loc.z]
   end
 
   def exists?(loc)
-    _blocks.has_key?(loc)
+    _blocks[loc.x][loc.y][loc.z]
   end
 
   def dirty!
@@ -42,7 +42,11 @@ class Chunk
   end
 
   def _generate_blocks
-    @blocks = {}
+    @blocks = Hash.new do |hx, x|
+      hx[x] = Hash.new do |hy, y|
+        hy[y] = {}
+      end
+    end
 
     TerrainGenerator.generate(@x_low, @z_low, SIZE, SIZE) do |x, y, z|
       loc = Point.new(x, y, z)
@@ -53,13 +57,15 @@ class Chunk
   def fill_buffer
     @vbo = glGenBuffers(1)[0]
 
-    vertices = _blocks.values.flat_map(&:vertices)
+    blocks = _blocks.values.flat_map(&:values).flat_map(&:values)
+
+    vertices = blocks.flat_map(&:vertices)
     vert_data = vertices.pack('f*')
 
-    tex_coords = _blocks.values.flat_map(&:tex_coords)
+    tex_coords = blocks.flat_map(&:tex_coords)
     tex_data = tex_coords.pack('f*')
 
-    colors = _blocks.values.flat_map(&:colors)
+    colors = blocks.flat_map(&:colors)
     color_data = colors.pack('C*')
 
     glBindBuffer(GL_ARRAY_BUFFER, @vbo)

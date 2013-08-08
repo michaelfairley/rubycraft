@@ -8,6 +8,7 @@ class Point
   end
 
   def hash
+    raise
     @hash ||= self.class.hash ^ [x, y, z].hash
   end
 

@@ -39,7 +39,7 @@ module Blocks
 
   def self.reset!
     self.damage_block = nil
-    _chunks.values.each(&:dirty!)  if @chunks
+    _chunks.values.flat_map(&:values).each(&:dirty!)  if @chunks
     @chunks = Hash.new do |hx, x|
       hx[x] = Hash.new do |hz, z|
         hz[z] = Chunk.new(x, z)
