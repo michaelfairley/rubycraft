@@ -57,7 +57,7 @@ class Chunk
   def fill_buffer
     @vbo = glGenBuffers(1)[0]
 
-    blocks = _blocks.values.flat_map(&:values).flat_map(&:values)
+    blocks = _blocks.values.flat_map(&:values).flat_map(&:values).flat_map(&:faces_to_show)
 
     vertices = blocks.flat_map(&:vertices)
     vert_data = vertices.pack('f*')
