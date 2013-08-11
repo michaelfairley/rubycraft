@@ -48,18 +48,6 @@ class Block
   def right  ;  right_face.new(frb+frt+brt+brb); end
   def left   ;   left_face.new(blb+blt+flt+flb); end
 
-  def vertices
-    faces_to_show.flat_map(&:vertices)
-  end
-
-  def tex_coords
-    faces_to_show.flat_map(&:tex_coords)
-  end
-
-  def colors
-    faces_to_show.flat_map(&:colors)
-  end
-
   def dig!
     Blocks.damage_block = self
     @strength -= 1
