@@ -46,20 +46,6 @@ end
 
 class DamageFace < Face
   COLORS = colors(255, 255, 230, 255)
-
-  def draw_immediate
-    glEnable(GL_BLEND)
-
-    glBegin(GL_QUADS) do
-      vertices.each_slice(3).zip(tex_coords.each_slice(2), colors.each_slice(4)) do |v, t, c|
-        glColor4f(*c)
-        glTexCoord2f(*t)
-        glVertex3f(*v)
-      end
-    end
-
-    glDisable(GL_BLEND)
-  end
 end
 
 class DamageFace0 < DamageFace

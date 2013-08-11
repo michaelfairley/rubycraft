@@ -62,7 +62,7 @@ module Blocks
     _nearby_chunks(player).each(&:draw)
 
     if damage_block
-      damage_block.damage_faces.each(&:draw_immediate)
+      damage_block.draw_damage
     end
   end
 

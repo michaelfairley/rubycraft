@@ -58,6 +58,33 @@ class Block
     end
   end
 
+  def draw_damage
+    glEnable(GL_BLEND)
+
+    damage_vbo = glGenBuffers(1)[0]
+
+    faces = damage_faces
+
+    vert_data = faces.flat_map(&:vertices).pack('f*')
+    tex_data = faces.map(&:tex_coords).join
+    color_data = faces.map(&:colors).join
+
+
+    glBindBuffer(GL_ARRAY_BUFFER, damage_vbo)
+    glBufferData(GL_ARRAY_BUFFER, vert_data.size+tex_data.size+color_data.size, vert_data + tex_data + color_data, GL_STATIC_DRAW)
+
+
+    glVertexPointer(3, GL_FLOAT, 0, 0)
+    glTexCoordPointer(2, GL_FLOAT, 0, vert_data.size)
+    glColorPointer(4, GL_UNSIGNED_BYTE, 0, vert_data.size + tex_data.size)
+
+    glDrawArrays(GL_QUADS, 0, faces.flat_map(&:vertices).size)
+
+    glDeleteBuffers(damage_vbo)
+
+    glDisable(GL_BLEND)
+  end
+
   def damage_faces
     damage_faces = []
     damage_faces << damage_right  unless Blocks.exists?(x+1, y, z)
