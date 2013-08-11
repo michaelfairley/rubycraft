@@ -62,18 +62,13 @@ class Chunk
     vertices = blocks.flat_map(&:vertices)
     vert_data = vertices.pack('f*')
 
-    tex_coords = blocks.flat_map(&:tex_coords)
-    tex_data = tex_coords.pack('f*')
+    tex_data = blocks.map(&:tex_coords).join
 
-    colors = blocks.flat_map(&:colors)
-    color_data = colors.pack('C*')
+    color_data = blocks.map(&:colors).join
 
     glBindBuffer(GL_ARRAY_BUFFER, @vbo)
-    glBufferData(GL_ARRAY_BUFFER, vertices.size*4+tex_coords.size*4+colors.size*4, vert_data + tex_data + color_data, GL_STATIC_DRAW)
+    glBufferData(GL_ARRAY_BUFFER, vert_data.size+tex_data.size+color_data.size, vert_data + tex_data + color_data, GL_STATIC_DRAW)
 
-
-    raise  unless vertices.size/3 == tex_coords.size/2
-    raise  unless vertices.size/3 == colors.size/4
     @vertices_count = vertices.size/3
   end
 

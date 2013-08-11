@@ -10,10 +10,14 @@ class Face
      x+0, y+0,
      x+1, y+0,
      x+1, y+1
-    ].map{ |c| c/16.0 }.freeze
+    ].map{ |c| c/16.0 }.pack('f*').freeze
   end
 
-  COLORS = ([255, 255, 255, 255] * 4).freeze
+  def self.colors(*rgba)
+    (rgba * 4).pack('C*').freeze
+  end
+
+  COLORS = colors(255, 255, 255, 255)
   def colors
     self.class::COLORS
   end
@@ -24,7 +28,7 @@ class Face
 end
 
 class GrassFace < Face
-  COLORS = ([77, 153, 102, 255] * 4).freeze
+  COLORS = colors(77, 153, 102, 255)
   TEX_COORDS = texture(0, 0)
 end
 
@@ -41,7 +45,7 @@ class StoneFace < Face
 end
 
 class DamageFace < Face
-  COLORS = ([255, 255, 230, 255] * 4).freeze
+  COLORS = colors(255, 255, 230, 255)
 
   def draw_immediate
     glEnable(GL_BLEND)
