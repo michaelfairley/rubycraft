@@ -147,14 +147,9 @@ class Rubycraft < Gosu::Window
     when Gosu::KbG
       if @profiling
         @profiling = false
-        result = RubyProf.stop
-
-        printer = RubyProf::FlatPrinter.new(result)
-        printer.print(STDOUT)
-        # PerfTools::CpuProfiler.stop
+        PerfTools::CpuProfiler.stop
       else
-        # PerfTools::CpuProfiler.start("/tmp/rubycraft_profile")
-        RubyProf.start
+        PerfTools::CpuProfiler.start("/tmp/rubycraft_profile")
         @profiling = true
         puts "Profiling..."
       end
