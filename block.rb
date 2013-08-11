@@ -58,47 +58,86 @@ class Block
     end
   end
 
+  def strength_ratio
+    @strength.to_f / starting_strength
+  end
+
   def draw_damage
+    DamageBlock.new(self).draw
+  end
+
+  def inspect
+    "#<Block: {@loc}>"
+  end
+end
+
+require 'forwardable'
+
+class DamageBlock
+  extend Forwardable
+
+  def_delegators :@block, :x, :y, :z, :blb, :brb, :flb, :frb, :blt, :brt, :flt, :frt, :strength_ratio
+
+  def initialize(block)
+    @block = block
+  end
+
+  def blend(&blk)
     glEnable(GL_BLEND)
+    yield
+  ensure
+    glDisable(GL_BLEND)
+  end
 
-    damage_vbo = glGenBuffers(1)[0]
+  def temp_vbo(&blk)
+    vbo = glGenBuffers(1)[0]
+    yield vbo
+  ensure
+    glDeleteBuffers(vbo)
+  end
 
-    faces = damage_faces
+  def vert_data
+    @vert_data ||= faces.flat_map(&:vertices).pack('f*')
+  end
 
-    vert_data = faces.flat_map(&:vertices).pack('f*')
-    tex_data = faces.map(&:tex_coords).join
-    color_data = faces.map(&:colors).join
+  def tex_data
+    @tex_data ||= faces.map(&:tex_coords).join
+  end
 
+  def color_data
+    @color_data ||= faces.map(&:colors).join
+  end
 
-    glBindBuffer(GL_ARRAY_BUFFER, damage_vbo)
+  def fill_buffer(vbo)
+    glBindBuffer(GL_ARRAY_BUFFER, vbo)
     glBufferData(GL_ARRAY_BUFFER, vert_data.size+tex_data.size+color_data.size, vert_data + tex_data + color_data, GL_STATIC_DRAW)
+  end
 
+  def draw_buffer(vbo)
+    glBindBuffer(GL_ARRAY_BUFFER, vbo)
 
     glVertexPointer(3, GL_FLOAT, 0, 0)
     glTexCoordPointer(2, GL_FLOAT, 0, vert_data.size)
     glColorPointer(4, GL_UNSIGNED_BYTE, 0, vert_data.size + tex_data.size)
 
     glDrawArrays(GL_QUADS, 0, faces.flat_map(&:vertices).size)
-
-    glDeleteBuffers(damage_vbo)
-
-    glDisable(GL_BLEND)
   end
 
-  def damage_faces
-    damage_faces = []
-    damage_faces << damage_right  unless Blocks.exists?(x+1, y, z)
-    damage_faces << damage_left   unless Blocks.exists?(x-1, y, z)
-    damage_faces << damage_top    unless Blocks.exists?(x, y+1, z)
-    damage_faces << damage_bottom unless Blocks.exists?(x, y-1, z)
-    damage_faces << damage_front  unless Blocks.exists?(x, y, z+1)
-    damage_faces << damage_back   unless Blocks.exists?(x, y, z-1)
-    damage_faces
+  def draw
+    blend do
+      temp_vbo do |vbo|
+        fill_buffer(vbo)
+        draw_buffer(vbo)
+      end
+    end
   end
 
-  def damage_face
-    strengthyness = @strength.to_f / starting_strength
-    case strengthyness
+  def faces
+    @faces ||= [right, left, top, bottom, front, back]
+  end
+
+  def face
+    case strength_ratio
     when 0.0...0.1; DamageFace9
     when 0.1...0.2; DamageFace8
     when 0.2...0.3; DamageFace7
@@ -113,16 +152,12 @@ class Block
     end
   end
 
-  def damage_top    ; damage_face.new(frt+flt+blt+brt); end
-  def damage_front  ; damage_face.new(flb+flt+frt+frb); end
-  def damage_back   ; damage_face.new(brb+brt+blt+blb); end
-  def damage_bottom ; damage_face.new(flb+frb+brb+blb); end
-  def damage_right  ; damage_face.new(frb+frt+brt+brb); end
-  def damage_left   ; damage_face.new(blb+blt+flt+flb); end
-
-  def inspect
-    "#<Block: {@loc}>"
-  end
+  def top    ; face.new(frt+flt+blt+brt); end
+  def front  ; face.new(flb+flt+frt+frb); end
+  def back   ; face.new(brb+brt+blt+blb); end
+  def bottom ; face.new(flb+frb+brb+blb); end
+  def right  ; face.new(frb+frt+brt+brb); end
+  def left   ; face.new(blb+blt+flt+flb); end
 end
 
 class GrassBlock < Block
