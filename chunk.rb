@@ -11,22 +11,22 @@ class Chunk
   end
 
   def add!(block)
-    _blocks[block.loc.x][block.loc.y][block.loc.z] = block
+    _blocks[block.x][block.y][block.z] = block
   end
 
   def remove!(block)
-    _blocks[block.loc.x][block.loc.y].delete(block.loc.z)
+    _blocks[block.x][block.y].delete(block.z)
     if block == Blocks.damage_block
       Blocks.damage_block = nil
     end
   end
 
-  def [](loc)
-    _blocks[loc.x][loc.y][loc.z]
+  def [](x, y, z)
+    _blocks[x][y][z]
   end
 
-  def exists?(loc)
-    _blocks[loc.x][loc.y][loc.z]
+  def exists?(x, y, z)
+    _blocks[x][y][z]
   end
 
   def dirty!
@@ -49,8 +49,7 @@ class Chunk
     end
 
     TerrainGenerator.generate(@x_low, @z_low, SIZE, SIZE) do |x, y, z|
-      loc = Point.new(x, y, z)
-      add!(GrassBlock.new(loc))
+      add!(GrassBlock.new(x, y, z))
     end
   end
 

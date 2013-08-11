@@ -5,36 +5,38 @@ module Blocks
     @chunks
   end
 
-  def self._chunk_for_point(loc)
-    x = loc.x.to_i / Chunk::SIZE * Chunk::SIZE
-    z = loc.z.to_i / Chunk::SIZE * Chunk::SIZE
+  def self._chunk_for_point(x, y, z)
+    cx = x.to_i / Chunk::SIZE * Chunk::SIZE
+    cz = z.to_i / Chunk::SIZE * Chunk::SIZE
 
-    _chunks[x][z]
+    _chunks[cx][cz]
   end
 
-  def self.exists?(loc)
-    _chunk_for_point(loc).exists?(loc)
+  def self.exists?(x, y, z)
+    _chunk_for_point(x, y, z).exists?(x, y, z)
   end
 
-  def self._dirty_neighbors!(loc)
-    loc.sides.map do |loc|
-      _chunk_for_point(loc)
-    end.each(&:dirty!)
+  def self._dirty_neighbors!(x, y, z)
+    _chunk_for_point(x+1, y, z).dirty!
+    _chunk_for_point(x-1, y, z).dirty!
+    _chunk_for_point(x, y+1, z).dirty!
+    _chunk_for_point(x, y-1, z).dirty!
+    _chunk_for_point(x, y, z+1).dirty!
+    _chunk_for_point(x, y, z-1).dirty!
   end
 
   def self.add!(block)
-    _chunk_for_point(block.loc).add!(block)
-    _dirty_neighbors!(block.loc)
+    _chunk_for_point(block.x, block.y, block.z).add!(block)
+    _dirty_neighbors!(block.x, block.y, block.z)
   end
 
   def self.remove!(block)
-    _chunk_for_point(block.loc).remove!(block)
-    _dirty_neighbors!(block.loc)
+    _chunk_for_point(block.x, block.y, block.z).remove!(block)
+    _dirty_neighbors!(block.x, block.y, block.z)
   end
 
-  def self.[](loc)
-    chunk = _chunk_for_point(loc)
-    chunk && chunk[loc]
+  def self.[](x, y, z)
+    _chunk_for_point(x, y, z)[x, y, z]
   end
 
   def self.reset!
@@ -51,7 +53,7 @@ module Blocks
     (-Player::SIGHT..Player::SIGHT).step(Chunk::SIZE).flat_map do |x|
       depth = Math.sqrt(Player::SIGHT**2 - x ** 2)
       (-depth..depth).step(Chunk::SIZE).map do |z|
-        _chunk_for_point(Point.new(x, 0, z) + player.loc)
+        _chunk_for_point(player.x + x, player.y, player.z + z)
       end
     end
   end

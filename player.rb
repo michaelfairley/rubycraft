@@ -5,24 +5,27 @@ class Player
   WIDTH = 0.4
   SIGHT = 50
 
-  attr_reader :y_angle, :x_angle, :loc
+  attr_reader :y_angle, :x_angle, :x, :y, :z
 
   def initialize
-    @loc = Point.new(50, 20, 50)
+    @x = 50
+    @y = 20
+    @z = 50
     @y_angle = 0
     @x_angle = 0
     @velocity = 0.0
   end
 
-  def x1; @loc.x-WIDTH; end
-  def x2; @loc.x+WIDTH; end
-  def y1; @loc.y-1.5; end
-  def y2; @loc.y+0.5; end
-  def z1; @loc.z-WIDTH; end
-  def z2; @loc.z+WIDTH; end
+  def x1; @x-WIDTH; end
+  def x2; @x+WIDTH; end
+  def y1; @y-1.5; end
+  def y2; @y+0.5; end
+  def z1; @z-WIDTH; end
+  def z2; @z+WIDTH; end
 
   def _move!(dx, dz)
-    @loc += Point.new(dx, 0, dz)
+    @x += dx
+    @z += dz
 
     resolve_horizontal_collision
     resolve_horizontal_collision
@@ -70,15 +73,15 @@ class Player
       end
 
       if dx.abs < dz.abs
-        @loc += Point.new(dx, 0, 0)
+        @x += dx
       else
-        @loc += Point.new(0, 0, dz)
+        @z += dz
       end
     end
   end
 
   def fall!
-    @loc += Point.new(0, @velocity, 0)
+    @y += @velocity
 
     unless colliding_blocks.empty?
       dy = if @velocity > 0
@@ -87,7 +90,7 @@ class Player
              colliding_blocks.map(&:y2).max - y1
            end
 
-      @loc += Point.new(0, dy, 0)
+      @y += dy
       @velocity = 0
     end
   end
@@ -140,23 +143,23 @@ class Player
       horizontal = Math.cos(x_angle * Math::PI / 180) * distance
       vertical = Math.sin(x_angle * Math::PI / 180) * distance
 
-      x = @loc.x + Math.sin(y_angle * Math::PI / 180) * horizontal
-      z = @loc.z - Math.cos(y_angle * Math::PI / 180) * horizontal
-      y = @loc.y + vertical
-      Point.new(x.round,y.round,z.round)
+      rx = x + Math.sin(y_angle * Math::PI / 180) * horizontal
+      rz = z - Math.cos(y_angle * Math::PI / 180) * horizontal
+      ry = y + vertical
+      [rx.round,ry.round,rz.round]
     end
   end
 
   def targeted_block
-    loc = _reach_ray.find do |loc|
-      Blocks.exists?(loc)
+    loc = _reach_ray.find do |x, y, z|
+      Blocks.exists?(x, y, z)
     end
-    loc && Blocks[loc]
+    loc && Blocks[*loc]
   end
 
   def targeted_empty_loc
     _reach_ray.each_cons(2).select do |current, nex|
-      Blocks.exists?(nex)
+      Blocks.exists?(*nex)
     end.map(&:first).first
   end
 
@@ -171,7 +174,7 @@ class Player
     nearby_blocks = (x_min..x_max).flat_map do |x|
       (y_min..y_max).flat_map do |y|
         (z_min..z_max).flat_map do |z|
-          Array(Blocks[Point.new(x, y, z)])
+          Array(Blocks[x, y, z])
         end
       end
     end

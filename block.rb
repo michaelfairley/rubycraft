@@ -1,12 +1,13 @@
 Hasu.load "blocks.rb"
-Hasu.load "point.rb"
 Hasu.load "face.rb"
 
 class Block
-  attr_reader :loc
+  attr_reader :x, :y, :z
 
-  def initialize(loc)
-    @loc = loc
+  def initialize(x, y, z)
+    @x = x
+    @y = y
+    @z = z
     reset_strength!
   end
 
@@ -14,21 +15,21 @@ class Block
     @strength = starting_strength
   end
 
-  def x1; @x1 ||= loc.x-0.5 ; end
-  def x2; @x2 ||= loc.x+0.5 ; end
-  def y1; @y1 ||= loc.y-0.5 ; end
-  def y2; @y2 ||= loc.y+0.5 ; end
-  def z1; @z1 ||= loc.z-0.5 ; end
-  def z2; @z2 ||= loc.z+0.5 ; end
+  def x1; @x1 ||= x-0.5 ; end
+  def x2; @x2 ||= x+0.5 ; end
+  def y1; @y1 ||= y-0.5 ; end
+  def y2; @y2 ||= y+0.5 ; end
+  def z1; @z1 ||= z-0.5 ; end
+  def z2; @z2 ||= z+0.5 ; end
 
   def faces_to_show
     faces = []
-    faces << right  unless Blocks.exists?(loc.right)
-    faces << left   unless Blocks.exists?(loc.left)
-    faces << top    unless Blocks.exists?(loc.up)
-    faces << bottom unless Blocks.exists?(loc.down)
-    faces << front  unless Blocks.exists?(loc.front)
-    faces << back   unless Blocks.exists?(loc.back)
+    faces << right  unless Blocks.exists?(x+1, y, z)
+    faces << left   unless Blocks.exists?(x-1, y, z)
+    faces << top    unless Blocks.exists?(x, y+1, z)
+    faces << bottom unless Blocks.exists?(x, y-1, z)
+    faces << back   unless Blocks.exists?(x, y, z+1)
+    faces << front  unless Blocks.exists?(x, y, z-1)
     faces
   end
 
@@ -59,12 +60,12 @@ class Block
 
   def damage_faces
     damage_faces = []
-    damage_faces << damage_right  unless Blocks.exists?(loc.right)
-    damage_faces << damage_left   unless Blocks.exists?(loc.left)
-    damage_faces << damage_top    unless Blocks.exists?(loc.up)
-    damage_faces << damage_bottom unless Blocks.exists?(loc.down)
-    damage_faces << damage_front  unless Blocks.exists?(loc.front)
-    damage_faces << damage_back   unless Blocks.exists?(loc.back)
+    damage_faces << damage_right  unless Blocks.exists?(x+1, y, z)
+    damage_faces << damage_left   unless Blocks.exists?(x-1, y, z)
+    damage_faces << damage_top    unless Blocks.exists?(x, y+1, z)
+    damage_faces << damage_bottom unless Blocks.exists?(x, y-1, z)
+    damage_faces << damage_front  unless Blocks.exists?(x, y, z+1)
+    damage_faces << damage_back   unless Blocks.exists?(x, y, z-1)
     damage_faces
   end
 

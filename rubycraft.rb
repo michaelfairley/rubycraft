@@ -11,7 +11,6 @@ require 'dbg'
 Hasu.load 'block.rb'
 Hasu.load 'blocks.rb'
 Hasu.load 'player.rb'
-Hasu.load 'point.rb'
 Hasu.load 'terrain_generator.rb'
 
 class Rubycraft < Gosu::Window
@@ -119,7 +118,7 @@ class Rubycraft < Gosu::Window
 
       glRotatef(@player.y_angle, 0, 1, 0)
       glRotatef(-@player.x_angle, Math.cos(@player.y_angle * Math::PI / 180), 0, Math.sin(@player.y_angle * Math::PI / 180))
-      glTranslate(-@player.loc.x, -@player.loc.y, -@player.loc.z)
+      glTranslate(-@player.x, -@player.y, -@player.z)
 
       glColor4f(1, 1, 1, 1)
 
@@ -161,7 +160,7 @@ class Rubycraft < Gosu::Window
       return unless @state == :playing
       empty_loc = @player.targeted_empty_loc
       if empty_loc
-        block = StoneBlock.new(empty_loc)
+        block = StoneBlock.new(*empty_loc)
         unless @player.colliding?(block)
           Blocks.add!(block)
         end
