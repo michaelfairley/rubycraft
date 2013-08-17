@@ -8,9 +8,9 @@ class Player
   attr_reader :y_angle, :x_angle, :x, :y, :z
 
   def initialize
-    @x = 50
+    @x = 0
     @y = 20
-    @z = 50
+    @z = 0
     @y_angle = 0
     @x_angle = 0
     @velocity = 0.0
