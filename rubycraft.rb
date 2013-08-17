@@ -19,6 +19,8 @@ class Rubycraft < Gosu::Window
   WIDTH = 640
   HEIGHT = 480
 
+  RETICLE_SIZE = 20
+
   attr_reader :texture
 
   def initialize
@@ -127,9 +129,35 @@ class Rubycraft < Gosu::Window
 
     @font.draw(Gosu.fps, 10, 440, 0)
 
-    if @state == :paused
+    case @state
+    when :playing
+      draw_reticle
+    when :paused
       @font.draw('Paused', 200, 200, 0)
     end
+  end
+
+  def draw_reticle
+    center_x = WIDTH/2
+    center_y = HEIGHT/2
+
+    color = Gosu::Color.rgba(0xffffff88)
+
+    # verticle
+    x1 = center_x - 1
+    x2 = center_x + 1
+    y1 = center_y - RETICLE_SIZE/2
+    y2 = center_y + RETICLE_SIZE/2
+
+    draw_quad(x1, y1, color, x2, y1, color, x2, y2, color, x1, y2, color)
+
+    # horizontal
+    x1 = center_x - RETICLE_SIZE/2
+    x2 = center_x + RETICLE_SIZE/2
+    y1 = center_y - 1
+    y2 = center_y + 1
+
+    draw_quad(x1, y1, color, x2, y1, color, x2, y2, color, x1, y2, color)
   end
 
   def button_down(button)
@@ -169,7 +197,7 @@ class Rubycraft < Gosu::Window
   end
 
   def needs_cursor?
-    true
+    @state != :playing
   end
 end
 
