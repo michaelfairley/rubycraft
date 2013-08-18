@@ -120,7 +120,7 @@ class Rubycraft < Gosu::Window
 
       glRotatef(@player.y_angle, 0, 1, 0)
       glRotatef(-@player.x_angle, Math.cos(@player.y_angle * Math::PI / 180), 0, Math.sin(@player.y_angle * Math::PI / 180))
-      glTranslate(-@player.x, -@player.y, -@player.z)
+      glTranslate(-@player.view_x, -@player.view_y, -@player.view_z)
 
       glColor4f(1, 1, 1, 1)
 

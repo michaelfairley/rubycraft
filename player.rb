@@ -14,6 +14,26 @@ class Player
     @y_angle = 0
     @x_angle = 0
     @velocity = 0.0
+
+    @lat_bob = 0
+    @vert_bob = 0
+  end
+
+  def view_x
+    x + Gosu.offset_y(@y_angle, 1) * Math.sin(@lat_bob) * 0.1
+  end
+
+  def view_y
+    y + Math.sin(@vert_bob)*0.08
+  end
+
+  def view_z
+    z + Gosu.offset_x(@y_angle, 1) * -Math.sin(@lat_bob) * 0.1
+  end
+
+  def bob!
+    @lat_bob += 0.1
+    @vert_bob += 0.2
   end
 
   def x1; @x-WIDTH; end
@@ -26,6 +46,7 @@ class Player
   def _move!(dx, dz)
     @x += dx
     @z += dz
+    bob!
 
     resolve_horizontal_collision
     resolve_horizontal_collision
