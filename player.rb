@@ -228,6 +228,7 @@ class Player
   end
 
   def dig!
+    @tool.swing!
     if targeted_block && (!@last_dig || @last_dig + 6 <= $tick)
       @last_dig = $tick
       targeted_block.dig!
