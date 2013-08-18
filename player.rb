@@ -43,7 +43,28 @@ class Player
   def z1; @z-WIDTH; end
   def z2; @z+WIDTH; end
 
-  def _move!(dx, dz)
+  def move!(directions)
+    forward = 0
+    forward += 1  if directions.fetch(:forward)
+    forward -= 1  if directions.fetch(:backward)
+
+    right = 0
+    right   += 1  if directions.fetch(:right)
+    right   -= 1  if directions.fetch(:left)
+
+    total = forward.abs + right.abs
+    return  if total == 0
+
+    dx = Gosu.offset_x(@y_angle, SPEED/Math.sqrt(total)) * forward -
+      Gosu.offset_y(@y_angle, SPEED/Math.sqrt(total)) * right
+
+    dz = Gosu.offset_y(@y_angle, SPEED/Math.sqrt(total)) * forward +
+      Gosu.offset_x(@y_angle, SPEED/Math.sqrt(total)) * right
+
+    _translate!(dx, dz)
+  end
+
+  def _translate!(dx, dz)
     @x += dx
     @z += dz
     bob!
@@ -126,22 +147,6 @@ class Player
 
   def gravity!
     @velocity -= 0.006
-  end
-
-  def forward!
-    _move!(Gosu.offset_x(@y_angle, SPEED), Gosu.offset_y(@y_angle, SPEED))
-  end
-
-  def backward!
-    _move!(-Gosu.offset_x(@y_angle, SPEED), -Gosu.offset_y(@y_angle, SPEED))
-  end
-
-  def sright!
-    _move!(-Gosu.offset_y(@y_angle, SPEED), Gosu.offset_x(@y_angle, SPEED))
-  end
-
-  def sleft!
-    _move!(Gosu.offset_y(@y_angle, SPEED), -Gosu.offset_x(@y_angle, SPEED))
   end
 
   def right!
