@@ -1,3 +1,5 @@
+Hasu.load "tool.rb"
+
 class Player
   SPEED = 0.1
   TURN_SPEED = 0.3
@@ -5,7 +7,7 @@ class Player
   WIDTH = 0.4
   SIGHT = 50
 
-  attr_reader :y_angle, :x_angle, :x, :y, :z
+  attr_reader :y_angle, :x_angle, :x, :y, :z, :tool
 
   def initialize
     @x = 0
@@ -17,6 +19,8 @@ class Player
 
     @lat_bob = 0
     @vert_bob = 0
+
+    @tool = Hand.new
   end
 
   def view_x
@@ -34,6 +38,8 @@ class Player
   def bob!
     @lat_bob += 0.1
     @vert_bob += 0.2
+
+    @tool.bob!
   end
 
   def x1; @x-WIDTH; end

@@ -12,6 +12,7 @@ Hasu.load 'block.rb'
 Hasu.load 'blocks.rb'
 Hasu.load 'player.rb'
 Hasu.load 'terrain_generator.rb'
+Hasu.load 'tool.rb'
 
 class Rubycraft < Gosu::Window
   prepend Hasu
@@ -119,6 +120,8 @@ class Rubycraft < Gosu::Window
       # glEnable(GL_LIGHT1)
       # glEnable(GL_LIGHTING)
       glEnable(GL_COLOR_MATERIAL)
+
+      @player.tool.draw
 
       glRotatef(@player.y_angle, 0, 1, 0)
       glRotatef(-@player.x_angle, Math.cos(@player.y_angle * Math::PI / 180), 0, Math.sin(@player.y_angle * Math::PI / 180))
