@@ -102,6 +102,8 @@ class Player
   end
 
   def fall!
+    gravity!
+
     @y += @velocity
 
     unless colliding_blocks.empty?

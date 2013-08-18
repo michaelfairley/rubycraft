@@ -53,7 +53,6 @@ class Rubycraft < Gosu::Window
     return  if @state == :paused
     $tick += 1
 
-    @player.gravity!
     @player.forward!   if button_down?(Gosu::KbW)
     @player.backward!  if button_down?(Gosu::KbS)
     @player.sleft!     if button_down?(Gosu::KbA)
