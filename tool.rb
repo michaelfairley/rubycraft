@@ -8,7 +8,7 @@ class Hand
   end
 
   def swing!
-    @swing = 30  if @swing == 0
+    @swing = 20  if @swing == 0
   end
 
   def draw
