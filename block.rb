@@ -22,6 +22,10 @@ class Block
   def z1; @z1 ||= z-0.5 ; end
   def z2; @z2 ||= z+0.5 ; end
 
+  def faces
+    [right, left, top, bottom, back, front]
+  end
+
   def faces_to_show
     faces = []
     faces << right  unless Blocks.exists?(x+1, y, z)

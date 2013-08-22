@@ -20,7 +20,7 @@ class Player
     @lat_bob = 0
     @vert_bob = 0
 
-    @tool = Hand.new
+    @tool = Stone.new
   end
 
   def view_x
